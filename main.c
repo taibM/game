@@ -1,49 +1,57 @@
-#include <stdlib.h>
+#include"vie.h"
+#include"vie.c"
 #include <stdio.h>
+#include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include <SDL/SDL_mixer.h>
-#include "enigme.h"
-#include <SDL/SDL_ttf.h>
-#include <time.h>
+#define WIDTH 1000
+#define HEIGHT 560
 
-int main()
+
+int main ( int argc, char* argv[] )
 {
-int d=1;
+        SDL_Surface *ecran = NULL;
+        
+        SDL_Event event;
+        int gameover = 1;
+        int test;
+	vie v;
+        init_vie(&v);
+        SDL_Init(SDL_INIT_VIDEO);
+        ecran = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+        SDL_WM_SetCaption("vie", NULL);
+        SDL_EnableKeyRepeat(.5,.5);
+        while(gameover)
+        {
+	test=0;
+                if(SDL_WaitEvent(&event))
+                {
+                        switch(event.type)
+                        {
+                        case SDL_QUIT:
+                                gameover = 0;
+                                break;
+                        case SDL_KEYDOWN:
 
-srand(time(NULL));   // should only be called once
-d=rand()%13; 
-TTF_Init();
-if(TTF_Init()==-1)
-{fprintf(stderr,"ERREUR INIT: %s \n",TTF_GetError());
-exit(EXIT_FAILURE);}
-SDL_Color couleurnoir={0,0,0};
-SDL_Surface *texte = NULL, *backg=NULL ; //declaration des variables globales 
-SDL_Rect positiontexte,positiond;
-positiontexte.x=640;
-positiontexte.y=360;
-TTF_Font *police;//(pointeur contient parametre de la police) 
-SDL_Init(SDL_INIT_VIDEO); // Initialisation de la SDL
-SDL_Surface *ecran =NULL;
-police=TTF_OpenFont("Raleway-ThinItalic.ttf",130);
-ecran=SDL_SetVideoMode(1280, 720, 32,SDL_ANYFORMAT); // Ouverture de la fenêtre
-backg = IMG_Load("quiz.png");
-positiond.x=0 ; 
-positiond.y=0 ; 
-SDL_BlitSurface(backg,NULL, ecran, &positiond);
-SDL_Flip(ecran);
-texte=TTF_RenderText_Blended(police,"Enigme!",couleurnoir);
-SDL_BlitSurface(texte,NULL,ecran,&positiontexte);
-SDL_Flip(ecran);
-SDL_Delay(2000);
-quiz(ecran,d);
-SDL_BlitSurface(backg,NULL, ecran, &positiond);
-SDL_Flip(ecran);
-reponse(ecran,d);
-SDL_FreeSurface(backg);
-TTF_CloseFont(police);
-TTF_Quit();
-SDL_Quit(); // Arrêt de la SDL 
+                                switch(event.key.keysym.sym)
+                                {
+                                
+                                case SDLK_RIGHT:
 
-    return EXIT_SUCCESS; // Fermeture du programme
+					test=1;
+
+                                        break;
+                                }
+                                break;
+                        }
+                        
+                        SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
+			updatevie(&v,test);  
+			displayvie(v ,ecran) ;	
+                        SDL_Flip(ecran);
+                }
+        }
+	vie_freevie(&v);
+        SDL_Quit();
+        return 0;
 }
