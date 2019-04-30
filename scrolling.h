@@ -13,6 +13,9 @@ typedef struct
 { 
   SDL_Surface background;
   SDL_Rect camera;
+  int acceleration;
+  int ajouter speed;
+  int speed_camera;
 }background;
 
 typedef struct 
